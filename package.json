@@ -1,0 +1,20 @@
+{
+    "name": "dorufig",
+    "version": "1.0.0",
+    "description": "My configs",
+    "main": "index.js",
+    "scripts": {
+        "sync": "ts-node src/main.ts"
+    },
+    "keywords": [
+        "config"
+    ],
+    "author": "Doru",
+    "license": "ISC",
+    "dependencies": {
+        "assertmin": "^0.3.5",
+        "got": "^11.8.2",
+        "ts-node": "^10.2.1",
+        "typescript": "^4.4.2"
+    }
+}

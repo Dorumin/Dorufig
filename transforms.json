@@ -1,0 +1,114 @@
+{
+    "pipelines": [
+        {
+            "name": "sync servicemin",
+            "steps": [
+                {
+                    "action": "read-json",
+                    "from": "./config.json"
+                },
+                {
+                    "action": "write-json",
+                    "to": "../Server/config.json"
+                },
+                {
+                    "action": "upload-heroku",
+                    "targets": [
+                        "servicemin"
+                    ]
+                },
+                {
+                    "action": "set",
+                    "values": {
+                        "IS_BACKUP": "true",
+                        "SERVICE_URL": "https://backupmin.herokuapp.com"
+                    }
+                },
+                {
+                    "action": "upload-heroku",
+                    "targets": [
+                        "backupmin"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "copy local Twinkle config",
+            "steps": [
+                {
+                    "action": "read-json",
+                    "from": "./config.json"
+                },
+                {
+                    "action": "keep-keys",
+                    "keys": [
+                        "TWINKLE"
+                    ]
+                },
+                {
+                    "action": "write-json",
+                    "to": "../Twinkle/config.json"
+                }
+            ]
+        },
+        {
+            "name": "copy local Hopal config",
+            "steps": [
+                {
+                    "action": "read-json",
+                    "from": "./config.json"
+                },
+                {
+                    "action": "keep-keys",
+                    "keys": [
+                        "HOPAL"
+                    ]
+                },
+                {
+                    "action": "write-json",
+                    "to": "../Hopal/config.json"
+                }
+            ]
+        }
+    ],
+    "targets": [
+        {
+            "from": "./config.json",
+            "to": "../Server/config.json",
+            "apps": [
+                "servicemin",
+                "backupmin"
+            ],
+            "transforms": [
+                {
+                    "type": "delete",
+                    "path": "HOPAL"
+                }
+            ]
+        },
+        {
+            "from": "./config.json",
+            "to": "../Hopal/config.json",
+            "transforms": [
+                {
+                    "type": "filter",
+                    "paths": [
+                        "HOPAL"
+                    ]
+                }
+            ]
+        },
+        {
+            "from": "./config.json",
+            "to": "../Twinkle/config.json",
+            "transforms": [
+                {
+                    "type": "filter",
+                    "paths": [
+                        "TWINKLE"
+                    ]
+                }
+            ]
+        }
+    ]
+}
