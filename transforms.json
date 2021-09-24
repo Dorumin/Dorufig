@@ -46,6 +46,12 @@
                     ]
                 },
                 {
+                    "action": "set",
+                    "values": [
+                        [["TWINKLE", "ENV"], "development"]
+                    ]
+                },
+                {
                     "action": "write-json",
                     "to": "../Twinkle/config.json"
                 }
@@ -65,48 +71,35 @@
                     ]
                 },
                 {
+                    "action": "set",
+                    "values": [
+                        [["HOPAL", "ENV"], "development"]
+                    ]
+                },
+                {
                     "action": "write-json",
                     "to": "../Hopal/config.json"
                 }
             ]
-        }
-    ],
-    "targets": [
-        {
-            "from": "./config.json",
-            "to": "../Server/config.json",
-            "apps": [
-                "servicemin",
-                "backupmin"
-            ],
-            "transforms": [
-                {
-                    "type": "delete",
-                    "path": "HOPAL"
-                }
-            ]
         },
         {
-            "from": "./config.json",
-            "to": "../Hopal/config.json",
-            "transforms": [
+            "name": "copy dotfiles",
+            "steps": [
                 {
-                    "type": "filter",
-                    "paths": [
-                        "HOPAL"
-                    ]
-                }
-            ]
-        },
-        {
-            "from": "./config.json",
-            "to": "../Twinkle/config.json",
-            "transforms": [
+                    "action": "read-text",
+                    "from": "./dotfiles/.bashrc"
+                },
                 {
-                    "type": "filter",
-                    "paths": [
-                        "TWINKLE"
-                    ]
+                    "action": "write-text",
+                    "to": "../../.bashrc"
+                },
+                {
+                    "action": "read-text",
+                    "from": "./dotfiles/.bash_profile"
+                },
+                {
+                    "action": "write-text",
+                    "to": "../../.bash_profile"
                 }
             ]
         }

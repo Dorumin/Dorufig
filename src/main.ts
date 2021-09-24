@@ -101,10 +101,22 @@ async function doPipeline(pipeline: Pipeline) {
                 console.log(`Written to disk ${step.to}`);
                 break;
             case 'set':
-                Object.assign(state, step.values);
+                if (Array.isArray(step.values)) {
+                    let curState = state;
+                    for (const [path, value] of step.values) {
+                        for (let i = 0; i < path.length; i++) {
+                            const key = path[i];
 
-                // const keys = Object.keys(step.values).join(', ');
-                // console.log(`Updated config keys: ${keys}`);
+                            if (i === path.length - 1) {
+                                curState[key] = value;
+                            } else {
+                                curState = state[key];
+                            }
+                        }
+                    }
+                } else {
+                    Object.assign(state, step.values);
+                }
                 break;
             case 'upload-heroku':
                 for (const target of step.targets) {
@@ -136,6 +148,16 @@ async function doPipeline(pipeline: Pipeline) {
                     }
                 }
 
+                break;
+            case 'read-text':
+                state = (await readFile(step.from)).toString();
+                console.log(`Read text ${step.from}`);
+                break;
+            case 'write-text':
+                await writeFile(step.to, state, {
+                    flag: 'r+'
+                });
+                console.log(`Written to disk ${step.to}`);
                 break;
             default:
                 unreachable(step);

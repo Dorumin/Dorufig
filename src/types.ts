@@ -22,9 +22,11 @@ type UploadHerokuStep = {
     targets: string[];
 };
 
+type SetPath = [string[], any];
+
 type SetStep = {
     action: 'set';
-    values: Record<string, any>;
+    values: Record<string, any> | SetPath[];
 };
 
 type KeepKeysStep = {
@@ -32,7 +34,24 @@ type KeepKeysStep = {
     keys: string[];
 };
 
-export type Step = ReadJsonStep | WriteJsonStep | UploadHerokuStep | SetStep | KeepKeysStep;
+type ReadTextStep = {
+    action: 'read-text';
+    from: string;
+};
+
+type WriteTextStep = {
+    action: 'write-text';
+    to: string;
+};
+
+export type Step
+    = ReadJsonStep
+    | WriteJsonStep
+    | UploadHerokuStep
+    | SetStep
+    | KeepKeysStep
+    | ReadTextStep
+    | WriteTextStep;
 
 export type HerokuAppResponse = {
     id: string;
